@@ -30,6 +30,7 @@ function guardarEstado() {
     JSON.stringify({
       productos,
       totalEnCaja,
+      confirmado, // <- Añade este campo
     })
   );
 }
@@ -39,6 +40,7 @@ function cargarEstado() {
   if (datos) {
     productos = datos.productos;
     totalEnCaja = datos.totalEnCaja || 0;
+    confirmado = datos.confirmado || false; // <- Carga el estado confirmado
   }
 }
 
@@ -58,6 +60,7 @@ function generarTabla() {
     tbody.appendChild(tr);
   });
   actualizarResumen();
+  if (confirmado) bloquearEdicion();
 }
 
 function confirmPassword() {
@@ -67,11 +70,11 @@ function confirmPassword() {
     bloquearEdicion();
     document.getElementById("passwordSection").innerHTML =
       "<strong>Stock confirmado.</strong>";
+    guardarEstado(); // <- Guarda inmediatamente al confirmar
   } else {
     alert("Contraseña incorrecta");
   }
 }
-
 function bloquearEdicion() {
   const filas = document.querySelectorAll("#tableBody tr");
   filas.forEach((fila, index) => {
@@ -79,23 +82,26 @@ function bloquearEdicion() {
     const precioInput = fila.querySelector(".price");
     const actualStock = fila.querySelector(".actualStock");
 
-    if (stockInput.value === "" || precioInput.value === "") {
-      alert(
-        "Completá stock y precio en todos los productos antes de confirmar."
-      );
-      confirmado = false;
-      return;
-    }
+    if (!confirmado) {
+      // Solo valida si no estaba previamente confirmado
+      if (stockInput.value === "" || precioInput.value === "") {
+        alert(
+          "Completá stock y precio en todos los productos antes de confirmar."
+        );
+        return;
+      }
 
-    productos[index].stock = parseInt(stockInput.value);
-    productos[index].precio = parseFloat(precioInput.value);
-    actualStock.innerText = productos[index].stock - productos[index].vendidos;
+      productos[index].stock = parseInt(stockInput.value);
+      productos[index].precio = parseFloat(precioInput.value);
+    }
 
     stockInput.disabled = true;
     precioInput.disabled = true;
+    actualStock.innerText = productos[index].stock - productos[index].vendidos;
   });
 
-  guardarEstado();
+  document.getElementById("passwordSection").innerHTML =
+    "<strong>Stock confirmado.</strong>";
 }
 
 function restarStock(btn, index) {
