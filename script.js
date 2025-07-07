@@ -30,7 +30,7 @@ function guardarEstado() {
     JSON.stringify({
       productos,
       totalEnCaja,
-      confirmado, // <- Añade este campo
+      confirmado,
     })
   );
 }
@@ -40,7 +40,7 @@ function cargarEstado() {
   if (datos) {
     productos = datos.productos;
     totalEnCaja = datos.totalEnCaja || 0;
-    confirmado = datos.confirmado || false; // <- Carga el estado confirmado
+    confirmado = datos.confirmado || false;
   }
 }
 
@@ -50,16 +50,18 @@ function generarTabla() {
   productos.forEach((prod, index) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
-    <td class="nombre">${prod.nombre}</td>
-    <td><input type="number" value="${prod.stock}" class="stockBase"></td>
-    <td><input type="number" value="${prod.precio}" class="price"></td>
-    <td><button class="restar" onclick="restarStock(this, ${index})">+1 Vendido</button></td>
-    <td class="actualStock">${prod.stock - prod.vendidos}</td>
-    <td class="totalVendido">$${prod.vendidos * prod.precio}</td>
-  `;
+      <td class="nombre">${prod.nombre}</td>
+      <td><input type="number" value="${prod.stock}" class="stockBase"></td>
+      <td><input type="number" value="${prod.precio}" class="price"></td>
+      <td><button class="restar" onclick="restarStock(this, ${index})">+1 Vendido</button></td>
+      <td class="actualStock">${prod.stock - prod.vendidos}</td>
+      <td class="totalVendido">$${prod.vendidos * prod.precio}</td>
+    `;
     tbody.appendChild(tr);
   });
+
   actualizarResumen();
+
   if (confirmado) bloquearEdicion();
 }
 
@@ -70,11 +72,12 @@ function confirmPassword() {
     bloquearEdicion();
     document.getElementById("passwordSection").innerHTML =
       "<strong>Stock confirmado.</strong>";
-    guardarEstado(); // <- Guarda inmediatamente al confirmar
+    guardarEstado();
   } else {
     alert("Contraseña incorrecta");
   }
 }
+
 function bloquearEdicion() {
   const filas = document.querySelectorAll("#tableBody tr");
   filas.forEach((fila, index) => {
@@ -83,11 +86,8 @@ function bloquearEdicion() {
     const actualStock = fila.querySelector(".actualStock");
 
     if (!confirmado) {
-      // Solo valida si no estaba previamente confirmado
       if (stockInput.value === "" || precioInput.value === "") {
-        alert(
-          "Completá stock y precio en todos los productos antes de confirmar."
-        );
+        alert("Completá stock y precio en todos los productos antes de confirmar.");
         return;
       }
 
@@ -121,8 +121,7 @@ function restarStock(btn, index) {
 
     actual.innerText = stockDisponible;
     const vendidos = fila.querySelector(".totalVendido");
-    vendidos.innerText =
-      "$" + productos[index].vendidos * productos[index].precio;
+    vendidos.innerText = "$" + productos[index].vendidos * productos[index].precio;
 
     totalEnCaja += productos[index].precio;
     actualizarResumen();
@@ -154,9 +153,33 @@ function reiniciarVentas() {
 
   productos.forEach((p) => (p.vendidos = 0));
   totalEnCaja = 0;
-  generarTabla();
+  confirmado = false;
+
+  // Reactivar inputs
+  const tbody = document.getElementById("tableBody");
+  const filas = tbody.querySelectorAll("tr");
+  filas.forEach((fila, index) => {
+    const stockInput = fila.querySelector(".stockBase");
+    const precioInput = fila.querySelector(".price");
+    const actualStock = fila.querySelector(".actualStock");
+    const totalVendido = fila.querySelector(".totalVendido");
+
+    stockInput.disabled = false;
+    precioInput.disabled = false;
+    actualStock.innerText = productos[index].stock;
+    totalVendido.innerText = "$0";
+  });
+
+  // Restaurar formulario de contraseña
+  document.getElementById("passwordSection").innerHTML = `
+    <label>Contraseña para confirmar stock: </label>
+    <input type="password" id="passwordInput" />
+    <button onclick="confirmPassword()">Confirmar</button>
+  `;
+
+  actualizarResumen();
   guardarEstado();
-  alert("Ventas reiniciadas correctamente.");
+  alert("Stock desbloqueado y ventas reiniciadas.");
 }
 
 // Inicialización
