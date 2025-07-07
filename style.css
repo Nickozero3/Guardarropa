@@ -23,7 +23,7 @@ input[type="number"] {
 }
 
 .restar {
-  background-color: rgb(99, 245, 99);
+  background-color: rgb(26, 134, 26);
   padding: 0.5rem;
   border: 0.5px black solid;
 }
@@ -35,7 +35,7 @@ input[type="number"] {
 }
 #reiniciarBtn {
   margin-top: 20px;
-  background: red;
+  background: rgb(214, 69, 69);
   color: white;
   padding: 10px;
   border: none;
@@ -44,11 +44,11 @@ input[type="number"] {
 
 /* Estilos base */
 :root {
-  --primary-color: #4a6fa5;
+  --primary-color: rgb(167, 6, 6);
   --secondary-color: #166088;
   --accent-color: #4fc3f7;
   --danger-color: #e74c3c;
-  --success-color: #2ecc71;
+  --success-color: #05632c;
   --light-color: #f8f9fa;
   --dark-color: #343a40;
 }
