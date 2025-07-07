@@ -2,41 +2,52 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Control de Stock y Ventas</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <h2>Control de Stock y Ventas</h2>
+    <div class="container">
+      <header>
+        <h1>Control de Stock y Ventas</h1>
+      </header>
 
-    <div id="passwordSection">
-      <label>Contraseña para confirmar stock: </label>
-      <input type="password" id="passwordInput" />
-      <button onclick="confirmPassword()">Confirmar</button>
+      <div id="passwordSection" class="card">
+        <label>Contraseña para confirmar stock: </label>
+        <input type="password" id="passwordInput" />
+        <button onclick="confirmPassword()">Confirmar</button>
+      </div>
+
+      <div class="table-responsive">
+        <table id="stockTable" class="responsive-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Stock Base</th>
+              <th>Precio ($)</th>
+              <th>Acción</th>
+              <th>Stock Actual</th>
+              <th>Total Vendido ($)</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="resumenVentas" class="card">
+        <h3>Total en caja: $<span id="totalCaja">0</span></h3>
+        <h4>Productos vendidos:</h4>
+        <ul id="listaVendidos"></ul>
+      </div>
+
+      <button
+        id="reiniciarBtn"
+        class="btn-reiniciar"
+        onclick="reiniciarVentas()"
+      >
+        🔄 Reiniciar Ventas
+      </button>
     </div>
-
-    <table id="stockTable">
-      <thead>
-        <tr>
-          <th>Producto</th>
-          <th>Stock Base</th>
-          <th>Precio ($)</th>
-          <th>Restar Vendidos</th>
-          <th>Stock Actual</th>
-          <th>Total Vendido ($)</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-
-    <div id="resumenVentas">
-      <h3>Total en caja: $<span id="totalCaja">0</span></h3>
-      <h4>Productos vendidos:</h4>
-      <ul id="listaVendidos"></ul>
-    </div>
-
-    <button id="reiniciarBtn" onclick="reiniciarVentas()">
-      🔄 Reiniciar Ventas
-    </button>
 
     <script src="script.js"></script>
   </body>
